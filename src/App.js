@@ -1,14 +1,16 @@
 import React from 'react';
+import { StateProvider } from './contexts/StateContext';
+import { NavigationContainer } from '@react-navigation/native';
 
-import {
-  View
-} from 'react-native';
-
-import HomeScreen from './pages/HomeScreen';
+import MainTab from './stacks/MainTab';
 
 const App = () => {
-  return(
-    <HomeScreen/>
+  return (
+    <StateProvider>
+      <NavigationContainer>
+        <MainTab />
+      </NavigationContainer>
+    </StateProvider>
   );
 };
 

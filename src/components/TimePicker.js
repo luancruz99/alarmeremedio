@@ -2,50 +2,42 @@ import React, { useState } from "react";
 
 import {
    TouchableOpacity,
-   Alert,
    StyleSheet,
+   Text
 } from 'react-native';
 
 import DateTimePicker from '@react-native-community/datetimepicker';
+import moment from 'moment';
+
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 
 const TimePicker = () => {
-   const [isDateTimePickerVisible, setIsDateTimePickerVisible] = useState(false);
-   const [date, setDate] = useState(new Date());
+   const [time, setTime] = useState(new Date());
+   const [show, setShow] = useState(false);
 
    const showDateTimePicker = () => {
-      setIsDateTimePickerVisible(true);
+      setShow(true);
    };
-
-   const hideDateTimePicker = () => {
-      setIsDateTimePickerVisible(false);
-   };
-
-   const handleDatePicker = (event, selectedDate) => {
-      const currentTime = Date.now();
-      const selected = selectedDate;
-      if (selected < currentTime) {
-         Alert.alert('Please choose future time');
-         hideDateTimePicker();
-         return false;
-      }
-      setDate(selected);
-      hideDateTimePicker();
+   
+   const handleTimePicker = (event, selectedDate) => {
+      setShow(false);
+      setTime(selectedDate);
    }
 
    return (
       <>
-         <TouchableOpacity style={style.newAlarm} onPress={() => showDateTimePicker()}>
-            <FontAwesomeIcon icon={faPlus} size={35}/>
+         <TouchableOpacity style={style.newAlarm} onPress={()=>showDateTimePicker()}>
+            <FontAwesomeIcon icon={faPlus} size={35} color={'#5b7cba'}/>
          </TouchableOpacity>
 
-         {isDateTimePickerVisible && (
+         <Text>{moment(time).format('hh:mm')}</Text>
+         {show && (
             <DateTimePicker
-               value={date}
-               mode="datetime"
+               value={time}
+               mode="time"
                is24Hour={true}
-               onChange={handleDatePicker}
+               onChange={handleTimePicker}
             />
          )}
 
@@ -56,9 +48,9 @@ const TimePicker = () => {
 const style = StyleSheet.create({
    newAlarm: {
       position: "absolute",
-      bottom: '12%',
-      right: '5%',
-      backgroundColor: '#c3c3c3',
+      bottom: '5%',
+      right: '7%',
+      backgroundColor: '#fff',
       width: 50,
       height: 50,
       borderRadius: 25,
