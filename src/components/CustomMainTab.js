@@ -67,7 +67,7 @@ const CustomMainTab = ({ state, descriptors, navigation }) => {
             } else {
                return (
                   <TouchableOpacity key={index} activeOpacity={1} underlayColor='transparent' style={styles.tab} onPress={handleTabPress}>
-                     <FontAwesomeIcon icon={iconName} size={isFocused ? 43 : 38} color={isFocused ? '#000' : '#ccc'} />
+                     <FontAwesomeIcon icon={iconName} size={isFocused ? 43 : 38} color={isFocused ? '#5b7cba' : '#dfe3f1'} />
                      <Text style={isFocused ? styles.labelFocused : styles.label}>{label}</Text>
                   </TouchableOpacity>
                );
@@ -94,11 +94,11 @@ const styles = StyleSheet.create({
    },
    label: {
       fontSize: 13,
-      color: '#ccc'
+      color: '#dfe3f1'
    },
    labelFocused: {
       fontSize: 13,
-      color: '#000'
+      color: '#5b7cba'
    },
    icon: {
       width: 40,

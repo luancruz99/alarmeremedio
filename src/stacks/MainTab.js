@@ -17,9 +17,9 @@ export default () => {
          initialRouteName='HomeScreen'
          backBehavior='none'
       >
-         <Tab.Screen name='UserScreen' component={UserScreen} options={{tabBarLabel: 'Alarmes'}} />
+         <Tab.Screen name='UserScreen' component={UserScreen} options={{tabBarLabel: 'Usuário'}} />
          <Tab.Screen name='HomeScreen' component={HomeScreen} options={{tabBarLabel: 'Alarmes'}} />
-         <Tab.Screen name='SettingsScreen' component={SettingsScreen} options={{tabBarLabel: 'Alarmes'}} />
+         <Tab.Screen name='SettingsScreen' component={SettingsScreen} options={{tabBarLabel: 'Configurações'}} />
       </Tab.Navigator>
    );
 };
