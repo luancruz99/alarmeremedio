@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "559653891631",
+    "firebase_url": "https://alarmeremedio-9064a-default-rtdb.firebaseio.com",
+    "project_id": "alarmeremedio-9064a",
+    "storage_bucket": "alarmeremedio-9064a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:559653891631:android:7e54a44d85033383e260da",
+        "android_client_info": {
+          "package_name": "com.alarmeremedio"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "559653891631-5idf32cfdc5b4r65b59v47jhecdb6gk1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.alarmeremedio",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "559653891631-cg0cld3q2i6git7pt90n06g4q3qc45vo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDs9vyuKdYPEvce9Zeq0est9-0_Ls1NFSY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "559653891631-cg0cld3q2i6git7pt90n06g4q3qc45vo.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

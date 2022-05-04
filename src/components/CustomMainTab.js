@@ -13,7 +13,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faClock, faUser } from '@fortawesome/free-regular-svg-icons';
 import { faGear } from '@fortawesome/free-solid-svg-icons';
 
-
 const CustomMainTab = ({ state, descriptors, navigation }) => {
    const [keyboardOpen, setKeyboardOpen] = useState(undefined);
 
@@ -49,7 +48,7 @@ const CustomMainTab = ({ state, descriptors, navigation }) => {
             let iconName = null;
 
             switch (route.name) {
-               case 'HomeScreen':
+               case 'AlarmStack':
                   iconName = faClock;
                   break;
                case 'UserScreen':
@@ -81,13 +80,13 @@ const styles = StyleSheet.create({
    container: {
       flexDirection: 'row',
       backgroundColor: '#fff',
+      height: '9%',
 
    },
    tab: {
       flex: 1,
       justifyContent: 'center',
       alignItems: 'center',
-      height: 70,
       borderTopWidth: 0.2,
       borderColor: '#cccccc90'
 

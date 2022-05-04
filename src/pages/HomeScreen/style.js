@@ -12,17 +12,16 @@ const style = StyleSheet.create({
    },
    nextAlarmText: {
       fontSize: 18,
-      fontFamily: 'Nunito-Regular',
       color: '#000',
    },
    nextAlarmTime: {
       fontSize: 50,
-      fontFamily: 'Nunito-SemiBold',
+      fontWeight: 'bold',
       color: '#000',
    },
    nextAlarmLabel: {
       fontSize: 20,
-      fontFamily: 'Nunito-SemiBold',
+      fontWeight: 'bold',
       color: '#000',
    },
    listAlarmsArea: {

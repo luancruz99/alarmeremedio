@@ -8,8 +8,8 @@ import {
 
 import { style } from './style'; 
 
-import ListAlarms from '../../components/ListAlarms';
-import TimePicker from '../../components/TimePicker';
+import AlarmList from '../../components/AlarmList';
+import AlarmRegistrationButton from '../../components/AlarmRegistrationButton';
 
 const HomeScreen = () => {
    
@@ -22,10 +22,10 @@ const HomeScreen = () => {
          </View>
 
          <View style={style.listAlarmsArea}>
-            <ListAlarms/>
+            <AlarmList/>
          </View>
 
-         <TimePicker/>
+         <AlarmRegistrationButton/>
       </SafeAreaView>
    );
 }
