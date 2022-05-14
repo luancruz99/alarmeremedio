@@ -8,22 +8,38 @@ import {
    Image,
    FlatList,
 } from 'react-native';
+
+import { useStateValue } from '../contexts/StateContext';
+import { useNavigation } from '@react-navigation/native';
 import database from '@react-native-firebase/database';
 
-//components
-import Days from './Days';
 
 const AlarmList = () => {
+   const navigation = useNavigation();
+   const [context, dispatch] = useStateValue();
+
    const [isEnabled, setIsEnabled] = useState(false);
    const [alarms, setAlarms] = useState([]);
 
-   const toggleSwitch = () => {
-      setIsEnabled(previousState => !previousState);
+   const toggleSwitch = async (t, item) => {
+      let databaseRef = database().ref(`/bd/alarms/${item.token}`);
+
+      await databaseRef.update({
+         status: t,
+      })
+
+   }
+
+   const handleAlarm = (item) => {
+      dispatch({ type: 'setAlarm', payload: { alarm: item } });
+      navigation.navigate('AlarmEdit');
    }
 
    useEffect(() => {
       database()
          .ref('/bd/alarms')
+         .orderByChild('owner')
+         .equalTo(context.userData.user.token)
          .on('value', (snapshot) => {
             let object = [];
             snapshot.forEach((childItem) => {
@@ -36,9 +52,6 @@ const AlarmList = () => {
             }
          });
 
-
-
-
    }, [])
 
    return (
@@ -46,23 +59,46 @@ const AlarmList = () => {
 
       <FlatList
          data={alarms}
-         style={{maxHeight: '86%', marginBottom: 20,}}
+         style={{ maxHeight: '86%', marginBottom: 20, }}
          renderItem={({ item }) => {
             return (
                <View>
-                  <TouchableOpacity style={style.mainContainer}>
+                  <TouchableOpacity style={style.mainContainer} onPress={() => handleAlarm(item)}>
                      <View style={style.rowDirection}>
-                        <Text style={style.alarmText}>{item.time}</Text>
+                        <Text style={style.alarmText}> {item.time}</Text>
                         <Image style={style.networkImage} source={require('../assets/images/users.png')} />
                      </View>
                      <Text style={style.alarmLabel}>{item.title}</Text>
-                     <Days />
+
+                     <View style={style.daysContainer}>
+                        <View style={item.monday ? style.selectedDaysView : style.daysView}>
+                           <Text style={item.monday ? style.selectedDaysText : style.daysText}>S</Text>
+                        </View>
+                        <View style={item.tuesday ? style.selectedDaysView : style.daysView}>
+                           <Text style={item.tuesday ? style.selectedDaysText : style.daysText}>T</Text>
+                        </View>
+                        <View style={item.wednesday ? style.selectedDaysView : style.daysView}>
+                           <Text style={item.wednesday ? style.selectedDaysText : style.daysText}>Q</Text>
+                        </View>
+                        <View style={item.thursday ? style.selectedDaysView : style.daysView}>
+                           <Text style={item.thursday ? style.selectedDaysText : style.daysText}>Q</Text>
+                        </View>
+                        <View style={item.friday ? style.selectedDaysView : style.daysView}>
+                           <Text style={item.friday ? style.selectedDaysText : style.daysText}>S</Text>
+                        </View>
+                        <View style={item.saturday ? style.selectedDaysView : style.daysView}>
+                           <Text style={item.saturday ? style.selectedDaysText : style.daysText}>S</Text>
+                        </View>
+                        <View style={item.sunday ? style.selectedDaysView : style.daysView}>
+                           <Text style={item.sunday ? style.selectedDaysText : style.daysText}>D</Text>
+                        </View>
+                     </View>
 
                      <Switch
                         trackColor={{ false: '#c0c0c0', true: '#81b0ff' }}
                         thumbColor={'#f4f3f4'}
-                        onValueChange={toggleSwitch}
-                        value={isEnabled}
+                        onValueChange={(t) => toggleSwitch(t, item)}
+                        value={item.status}
                         style={style.switch}
                      />
                   </TouchableOpacity>
@@ -111,7 +147,38 @@ const style = StyleSheet.create({
       marginLeft: 10,
       width: 28,
       height: 28,
-   }
+   },
+   daysContainer: {
+      flexDirection: 'row',
+      marginTop: 5,
+   },
+   daysView: {
+      alignItems: 'center',
+      justifyContent: 'center',
+      height: 20,
+      width: 20,
+      borderRadius: 10,
+      backgroundColor: '#e3e3e3',
+      marginHorizontal: 2,
+   },
+   daysText: {
+      fontSize: 12,
+      color: '#000',
+   },
+   selectedDaysView: {
+      alignItems: 'center',
+      justifyContent: 'center',
+      height: 20,
+      width: 20,
+      borderRadius: 10,
+      backgroundColor: '#000',
+      marginHorizontal: 2,
+   },
+   selectedDaysText: {
+      fontSize: 12,
+      color: '#fff',
+   },
+
 
 })
 

@@ -47,7 +47,7 @@ const style = StyleSheet.create({
    },
    descriptionInput: {
       width: '93%',
-      height: 120,
+      height: 70,
       paddingHorizontal: 15,
       borderRadius: 10,
       backgroundColor: '#e3e3e3',
@@ -117,6 +117,26 @@ const style = StyleSheet.create({
       backgroundColor: '#fff',
       borderRadius: 50,
       padding: 2,
+   },
+   trashIconArea: {
+      alignItems: 'center',
+      justifyContent: 'center',
+
+   },
+   rowView: {
+      flexDirection: 'row',
+      width: '93%',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginTop: 10,
+   },
+   deviceArea: {
+      width: '88%',
+      height: 45,
+      borderRadius: 10,
+      justifyContent: 'center',
+      backgroundColor: '#e3e3e3',
+      borderRadius: 10,
    },
 })
 

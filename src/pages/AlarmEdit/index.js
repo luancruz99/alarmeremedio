@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
    SafeAreaView,
    TouchableOpacity,
@@ -15,16 +15,17 @@ import { useStateValue } from '../../contexts/StateContext';
 
 import database from '@react-native-firebase/database';
 
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { faTrashCan } from '@fortawesome/free-regular-svg-icons';
 import { Picker } from '@react-native-picker/picker';
 import SimpleToast from 'react-native-simple-toast';
 import DatePicker from 'react-native-date-picker';
-import uuid from 'react-native-uuid';
 import moment from 'moment';
 import 'moment/locale/pt-br';
 
 import { style } from './style';
 
-const AlarmRegistration = () => {
+const AlarmEdit = () => {
    const navigation = useNavigation();
    const [context, dispatch] = useStateValue();
 
@@ -44,22 +45,42 @@ const AlarmRegistration = () => {
 
    const [loading, setLoading] = useState(false);
 
-   const handleRegistrationButton = async () => {
+   useEffect(() => {
+
+      setDate(moment(context.alarmData.alarm.formatedDate).toDate());
+      setTitle(context.alarmData.alarm.title);
+      setDoctor(context.alarmData.alarm.doctor);
+      setDescription(context.alarmData.alarm.description);
+      setDrug(context.alarmData.alarm.drug);
+      setMonday(context.alarmData.alarm.monday);
+      setTuesday(context.alarmData.alarm.tuesday);
+      setWednesday(context.alarmData.alarm.wednesday);
+      setThursday(context.alarmData.alarm.thursday);
+      setFriday(context.alarmData.alarm.friday);
+      setSaturday(context.alarmData.alarm.saturday);
+      setSunday(context.alarmData.alarm.sunday);
+   }, []);
+
+   const handleTrashIcon = async () => {
+      let databaseRef = database().ref(`/bd/alarms/${context.alarmData.alarm.token}`);
+
+      await databaseRef.remove();
+      navigation.goBack();
+   }
+
+   const handleSaveButton = async () => {
       if (loading) {
-         SimpleToast.show('Cadastro em andamento!');
+         SimpleToast.show('Realizando alterações...');
          return;
       }
 
       setLoading(true);
 
-      let token = uuid.v4();
-      let status = true;
+      let databaseRef = database().ref(`/bd/alarms/${context.alarmData.alarm.token}`);
       let time = moment(date).format('LT');
-      let owner = context.userData.user.token;
       let formatedDate = moment(date).format();
-      let databaseRef = database().ref(`/bd/alarms/${token}`);
 
-      await databaseRef.set({
+      await databaseRef.update({
          formatedDate,
          time,
          title,
@@ -73,9 +94,6 @@ const AlarmRegistration = () => {
          friday,
          saturday,
          sunday,
-         owner,
-         token,
-         status,
       })
 
       setLoading(false);
@@ -87,7 +105,7 @@ const AlarmRegistration = () => {
 
          {loading && <ActivityIndicator style={style.loadingIndicator} color="#5b7cba" size="large" />}
 
-         <Text style={style.registrationText}>Cadastrar Alarme</Text>
+         <Text style={style.registrationText}>Editar Alarme</Text>
 
          <ScrollView style={style.registrationArea}>
             <View style={style.alignItens}>
@@ -156,14 +174,32 @@ const AlarmRegistration = () => {
                   placeholder='Observações'
                   multiline={true}
                />
+               <View style={style.rowView}>
+                  <View style={style.deviceArea}>
+                     <Picker
+                        selectedValue={drug}
+                        onValueChange={(t) => setDrug(t)}
+                        style={style.registrationPicker}
+                     >
+                        <Picker.Item label='Alexa' value='' style={style.pickerItem} />
+                        <Picker.Item label='Google Home' value='' style={style.pickerItem} />
+                     </Picker>
+                  </View>
+
+                  <TouchableOpacity style={style.trashIconArea} onPress={handleTrashIcon}>
+                     <FontAwesomeIcon color='#000' size={35} icon={faTrashCan} />
+                  </TouchableOpacity>
+               </View>
             </View>
          </ScrollView>
 
-         <TouchableOpacity style={style.registrationButton} onPress={() => handleRegistrationButton()}>
-            <Text style={style.registrationButtonText}>Cadastrar</Text>
+         <TouchableOpacity style={style.registrationButton} onPress={handleSaveButton}>
+            <Text style={style.registrationButtonText}>Salvar</Text>
          </TouchableOpacity>
+
+
       </SafeAreaView>
    );
-};
+}
 
-export default AlarmRegistration;
+export default AlarmEdit;

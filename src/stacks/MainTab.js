@@ -9,7 +9,7 @@ import CustomMainTab from '../components/CustomMainTab';
 
 const Tab = createBottomTabNavigator();
 
-export default () => {
+const MainTab = () => {
    return(
       <Tab.Navigator
          screenOptions={{headerShown: false}}
@@ -23,3 +23,5 @@ export default () => {
       </Tab.Navigator>
    );
 };
+
+export default MainTab;

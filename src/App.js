@@ -2,13 +2,13 @@ import React from 'react';
 import { StateProvider } from './contexts/StateContext';
 import { NavigationContainer } from '@react-navigation/native';
 
-import MainTab from './stacks/MainTab';
+import AuthStack from './stacks/AuthStack';
 
 const App = () => {
   return (
     <StateProvider>
       <NavigationContainer>
-        <MainTab />
+        <AuthStack />
       </NavigationContainer>
     </StateProvider>
   );
