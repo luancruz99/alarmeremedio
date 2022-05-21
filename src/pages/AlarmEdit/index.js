@@ -30,36 +30,64 @@ const AlarmEdit = () => {
    const [context, dispatch] = useStateValue();
 
 
-   const [date, setDate] = useState(new Date());
+   const [date, setDate] = useState(moment(context.alarmData.alarm.formatedDate).toDate());
    const [title, setTitle] = useState('');
    const [doctor, setDoctor] = useState('');
    const [description, setDescription] = useState('');
    const [drug, setDrug] = useState('');
-   const [monday, setMonday] = useState(false);
-   const [tuesday, setTuesday] = useState(false);
-   const [wednesday, setWednesday] = useState(false);
-   const [thursday, setThursday] = useState(false);
-   const [friday, setFriday] = useState(false);
-   const [saturday, setSaturday] = useState(false);
-   const [sunday, setSunday] = useState(false);
+   const [monday, setMonday] = useState({ nextDate: '', enabled: false });
+   const [tuesday, setTuesday] = useState({ nextDate: '', enabled: false });
+   const [wednesday, setWednesday] = useState({ nextDate: '', enabled: false });
+   const [thursday, setThursday] = useState({ nextDate: '', enabled: false });
+   const [friday, setFriday] = useState({ nextDate: '', enabled: false });
+   const [saturday, setSaturday] = useState({ nextDate: '', enabled: false });
+   const [sunday, setSunday] = useState({ nextDate: '', enabled: false });
 
    const [loading, setLoading] = useState(false);
 
    useEffect(() => {
 
-      setDate(moment(context.alarmData.alarm.formatedDate).toDate());
       setTitle(context.alarmData.alarm.title);
       setDoctor(context.alarmData.alarm.doctor);
       setDescription(context.alarmData.alarm.description);
       setDrug(context.alarmData.alarm.drug);
-      setMonday(context.alarmData.alarm.monday);
-      setTuesday(context.alarmData.alarm.tuesday);
-      setWednesday(context.alarmData.alarm.wednesday);
-      setThursday(context.alarmData.alarm.thursday);
-      setFriday(context.alarmData.alarm.friday);
-      setSaturday(context.alarmData.alarm.saturday);
-      setSunday(context.alarmData.alarm.sunday);
-   }, []);
+      setMonday(context.alarmData.alarm.days.monday);
+      setTuesday(context.alarmData.alarm.days.tuesday);
+      setWednesday(context.alarmData.alarm.days.wednesday);
+      setThursday(context.alarmData.alarm.days.thursday);
+      setFriday(context.alarmData.alarm.days.friday);
+      setSaturday(context.alarmData.alarm.days.saturday);
+      setSunday(context.alarmData.alarm.days.sunday);
+
+      for (let i = 0; i <= 6; i++) {
+         let today = new Date();
+         today.setDate(today.getDate() + i)
+
+         switch (today.getDay()) {
+            case 0:
+               setSunday({ ...sunday, nextDate: moment(`${moment(today).format('YYYY-MM-DD')}T${moment(date).format('LT')}:00-03:00`).format() });
+               break;
+            case 1:
+               setMonday({ ...monday, nextDate: moment(`${moment(today).format('YYYY-MM-DD')}T${moment(date).format('LT')}:00-03:00`).format() });
+               break;
+            case 2:
+               setTuesday({ ...tuesday, nextDate: moment(`${moment(today).format('YYYY-MM-DD')}T${moment(date).format('LT')}:00-03:00`).format() });
+               break;
+            case 3:
+               setWednesday({ ...wednesday, nextDate: moment(`${moment(today).format('YYYY-MM-DD')}T${moment(date).format('LT')}:00-03:00`).format() });
+               break;
+            case 4:
+               setThursday({ ...thursday, nextDate: moment(`${moment(today).format('YYYY-MM-DD')}T${moment(date).format('LT')}:00-03:00`).format() });
+               break;
+            case 5:
+               setFriday({ ...friday, nextDate: moment(`${moment(today).format('YYYY-MM-DD')}T${moment(date).format('LT')}:00-03:00`).format() });
+               break;
+            case 6:
+               setSaturday({ ...saturday, nextDate: moment(`${moment(today).format('YYYY-MM-DD')}T${moment(date).format('LT')}:00-03:00`).format() });
+               break;
+         }
+      }
+   }, [date]);
 
    const handleTrashIcon = async () => {
       let databaseRef = database().ref(`/bd/alarms/${context.alarmData.alarm.token}`);
@@ -79,6 +107,7 @@ const AlarmEdit = () => {
       let databaseRef = database().ref(`/bd/alarms/${context.alarmData.alarm.token}`);
       let time = moment(date).format('LT');
       let formatedDate = moment(date).format();
+      let days = { monday, tuesday, wednesday, thursday, friday, saturday, sunday }
 
       await databaseRef.update({
          formatedDate,
@@ -87,13 +116,7 @@ const AlarmEdit = () => {
          doctor,
          description,
          drug,
-         monday,
-         tuesday,
-         wednesday,
-         thursday,
-         friday,
-         saturday,
-         sunday,
+         days,
       })
 
       setLoading(false);
@@ -120,26 +143,26 @@ const AlarmEdit = () => {
 
 
                <View style={style.daysContainer}>
-                  <TouchableOpacity style={monday ? style.selectedDaysView : style.daysView} onPress={() => setMonday(!monday)}>
-                     <Text style={monday ? style.selectedDaysText : style.daysText}>S</Text>
+                  <TouchableOpacity style={monday.enabled ? style.selectedDaysView : style.daysView} onPress={() => setMonday({ ...monday, enabled: !monday.enabled })}>
+                     <Text style={monday.enabled ? style.selectedDaysText : style.daysText}>S</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity style={tuesday ? style.selectedDaysView : style.daysView} onPress={() => setTuesday(!tuesday)}>
-                     <Text style={tuesday ? style.selectedDaysText : style.daysText}>T</Text>
+                  <TouchableOpacity style={tuesday.enabled ? style.selectedDaysView : style.daysView} onPress={() => setTuesday({ ...tuesday, enabled: !tuesday.enabled })}>
+                     <Text style={tuesday.enabled ? style.selectedDaysText : style.daysText}>T</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity style={wednesday ? style.selectedDaysView : style.daysView} onPress={() => setWednesday(!wednesday)}>
-                     <Text style={wednesday ? style.selectedDaysText : style.daysText}>Q</Text>
+                  <TouchableOpacity style={wednesday.enabled ? style.selectedDaysView : style.daysView} onPress={() => setWednesday({ ...wednesday, enabled: !wednesday.enabled })}>
+                     <Text style={wednesday.enabled ? style.selectedDaysText : style.daysText}>Q</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity style={thursday ? style.selectedDaysView : style.daysView} onPress={() => setThursday(!thursday)}>
-                     <Text style={thursday ? style.selectedDaysText : style.daysText}>Q</Text>
+                  <TouchableOpacity style={thursday.enabled ? style.selectedDaysView : style.daysView} onPress={() => setThursday({ ...thursday, enabled: !thursday.enabled })}>
+                     <Text style={thursday.enabled ? style.selectedDaysText : style.daysText}>Q</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity style={friday ? style.selectedDaysView : style.daysView} onPress={() => setFriday(!friday)}>
-                     <Text style={friday ? style.selectedDaysText : style.daysText}>S</Text>
+                  <TouchableOpacity style={friday.enabled ? style.selectedDaysView : style.daysView} onPress={() => setFriday({ ...friday, enabled: !friday.enabled })}>
+                     <Text style={friday.enabled ? style.selectedDaysText : style.daysText}>S</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity style={saturday ? style.selectedDaysView : style.daysView} onPress={() => setSaturday(!saturday)}>
-                     <Text style={saturday ? style.selectedDaysText : style.daysText}>S</Text>
+                  <TouchableOpacity style={saturday.enabled ? style.selectedDaysView : style.daysView} onPress={() => setSaturday({ ...saturday, enabled: !saturday.enabled })}>
+                     <Text style={saturday.enabled ? style.selectedDaysText : style.daysText}>S</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity style={sunday ? style.selectedDaysView : style.daysView} onPress={() => setSunday(!sunday)}>
-                     <Text style={sunday ? style.selectedDaysText : style.daysText}>D</Text>
+                  <TouchableOpacity style={sunday.enabled ? style.selectedDaysView : style.daysView} onPress={() => setSunday({ ...sunday, enabled: !sunday.enabled })}>
+                     <Text style={sunday.enabled ? style.selectedDaysText : style.daysText}>D</Text>
                   </TouchableOpacity>
                </View>
 

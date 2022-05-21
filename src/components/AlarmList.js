@@ -9,16 +9,18 @@ import {
    FlatList,
 } from 'react-native';
 
+import PushNotification, { Importance } from 'react-native-push-notification';
 import { useStateValue } from '../contexts/StateContext';
 import { useNavigation } from '@react-navigation/native';
 import database from '@react-native-firebase/database';
+import moment from 'moment';
+
 
 
 const AlarmList = () => {
    const navigation = useNavigation();
    const [context, dispatch] = useStateValue();
 
-   const [isEnabled, setIsEnabled] = useState(false);
    const [alarms, setAlarms] = useState([]);
 
    const toggleSwitch = async (t, item) => {
@@ -31,9 +33,13 @@ const AlarmList = () => {
    }
 
    const handleAlarm = (item) => {
+
       dispatch({ type: 'setAlarm', payload: { alarm: item } });
       navigation.navigate('AlarmEdit');
+
    }
+
+
 
    useEffect(() => {
       database()
@@ -52,7 +58,12 @@ const AlarmList = () => {
             }
          });
 
+
+
+
    }, [])
+
+
 
    return (
 
@@ -71,26 +82,26 @@ const AlarmList = () => {
                      <Text style={style.alarmLabel}>{item.title}</Text>
 
                      <View style={style.daysContainer}>
-                        <View style={item.monday ? style.selectedDaysView : style.daysView}>
-                           <Text style={item.monday ? style.selectedDaysText : style.daysText}>S</Text>
+                        <View style={item.days.monday.enabled ? style.selectedDaysView : style.daysView}>
+                           <Text style={item.days.monday.enabled ? style.selectedDaysText : style.daysText}>S</Text>
                         </View>
-                        <View style={item.tuesday ? style.selectedDaysView : style.daysView}>
-                           <Text style={item.tuesday ? style.selectedDaysText : style.daysText}>T</Text>
+                        <View style={item.days.tuesday.enabled ? style.selectedDaysView : style.daysView}>
+                           <Text style={item.days.tuesday.enabled ? style.selectedDaysText : style.daysText}>T</Text>
                         </View>
-                        <View style={item.wednesday ? style.selectedDaysView : style.daysView}>
-                           <Text style={item.wednesday ? style.selectedDaysText : style.daysText}>Q</Text>
+                        <View style={item.days.wednesday.enabled ? style.selectedDaysView : style.daysView}>
+                           <Text style={item.days.wednesday.enabled ? style.selectedDaysText : style.daysText}>Q</Text>
                         </View>
-                        <View style={item.thursday ? style.selectedDaysView : style.daysView}>
-                           <Text style={item.thursday ? style.selectedDaysText : style.daysText}>Q</Text>
+                        <View style={item.days.thursday.enabled ? style.selectedDaysView : style.daysView}>
+                           <Text style={item.days.thursday.enabled ? style.selectedDaysText : style.daysText}>Q</Text>
                         </View>
-                        <View style={item.friday ? style.selectedDaysView : style.daysView}>
-                           <Text style={item.friday ? style.selectedDaysText : style.daysText}>S</Text>
+                        <View style={item.days.friday.enabled ? style.selectedDaysView : style.daysView}>
+                           <Text style={item.days.friday.enabled ? style.selectedDaysText : style.daysText}>S</Text>
                         </View>
-                        <View style={item.saturday ? style.selectedDaysView : style.daysView}>
-                           <Text style={item.saturday ? style.selectedDaysText : style.daysText}>S</Text>
+                        <View style={item.days.saturday.enabled ? style.selectedDaysView : style.daysView}>
+                           <Text style={item.days.saturday.enabled ? style.selectedDaysText : style.daysText}>S</Text>
                         </View>
-                        <View style={item.sunday ? style.selectedDaysView : style.daysView}>
-                           <Text style={item.sunday ? style.selectedDaysText : style.daysText}>D</Text>
+                        <View style={item.days.sunday.enabled ? style.selectedDaysView : style.daysView}>
+                           <Text style={item.days.sunday.enabled ? style.selectedDaysText : style.daysText}>D</Text>
                         </View>
                      </View>
 

@@ -7,6 +7,7 @@ import {
    ActivityIndicator,
 } from 'react-native';
 
+import PushNotification from 'react-native-push-notification';
 import database from '@react-native-firebase/database';
 import api from '../../services/api';
 
@@ -52,9 +53,16 @@ const PrealoadScreen = () => {
       }
 
       checkLogin();
+      createChannels();
 
    }, []);
 
+   const createChannels = () => {
+      PushNotification.createChannel({
+         channelId: 'main-channel',
+         channelName: 'Main Channel'
+      })
+   }
 
    return (
       <SafeAreaView style={style.container}>
