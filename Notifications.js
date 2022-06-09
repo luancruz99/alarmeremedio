@@ -1,4 +1,3 @@
-import PushNotificationIOS from "@react-native-community/push-notification-ios";
 import PushNotification from "react-native-push-notification";
 
 // Must be outside of any component LifeCycle (such as `componentDidMount`).

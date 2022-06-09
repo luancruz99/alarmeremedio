@@ -15,7 +15,7 @@ import { useStateValue } from '../../contexts/StateContext';
 
 import database from '@react-native-firebase/database';
 
-import PushNotification from 'react-native-push-notification';
+//import PushNotification from 'react-native-push-notification';
 import { Picker } from '@react-native-picker/picker';
 import SimpleToast from 'react-native-simple-toast';
 import DatePicker from 'react-native-date-picker';
@@ -50,27 +50,50 @@ const AlarmRegistration = () => {
          let today = new Date();
          today.setDate(today.getDate() + i)
 
-         switch (today.getDay()) {
+         /*switch (today.getDay()) {
             case 0:
-               setSunday({ ...sunday, nextDate: `${moment(today).format('YYYY-MM-DD')}T${moment(date).format('LT')}:00` });
+               setSunday({ ...sunday, nextDate: `${moment(today).format('YYYY-MM-DD')}T${moment(date).format('LT')}:00-03:00` });
                break;
             case 1:
-               setMonday({ ...monday, nextDate: `${moment(today).format('YYYY-MM-DD')}T${moment(date).format('LT')}:00` });
+               setMonday({ ...monday, nextDate: `${moment(today).format('YYYY-MM-DD')}T${moment(date).format('LT')}:00-03:00` });
                break;
             case 2:
-               setTuesday({ ...tuesday, nextDate: `${moment(today).format('YYYY-MM-DD')}T${moment(date).format('LT')}:00` });
+               setTuesday({ ...tuesday, nextDate: `${moment(today).format('YYYY-MM-DD')}T${moment(date).format('LT')}:00-03:00` });
                break;
             case 3:
-               setWednesday({ ...wednesday, nextDate: `${moment(today).format('YYYY-MM-DD')}T${moment(date).format('LT')}:00` });
+               setWednesday({ ...wednesday, nextDate: `${moment(today).format('YYYY-MM-DD')}T${moment(date).format('LT')}:00-03:00` });
                break;
             case 4:
-               setThursday({ ...thursday, nextDate: `${moment(today).format('YYYY-MM-DD')}T${moment(date).format('LT')}:00` });
+               setThursday({ ...thursday, nextDate: `${moment(today).format('YYYY-MM-DD')}T${moment(date).format('LT')}:00-03:00` });
                break;
             case 5:
-               setFriday({ ...friday, nextDate: `${moment(today).format('YYYY-MM-DD')}T${moment(date).format('LT')}:00` });
+               setFriday({ ...friday, nextDate: `${moment(today).format('YYYY-MM-DD')}T${moment(date).format('LT')}:00-03:00` });
                break;
             case 6:
-               setSaturday({ ...saturday, nextDate: `${moment(today).format('YYYY-MM-DD')}T${moment(date).format('LT')}:00` });
+               setSaturday({ ...saturday, nextDate: `${moment(today).format('YYYY-MM-DD')}T${moment(date).format('LT')}:00-03:00` });
+               break;
+         }*/
+         switch (today.getDay()) {
+            case 0:
+               setSunday({ ...sunday, nextDate: `${moment(today).format('DD-MM-YYYY')} ${moment(date).format('LT')}:00` });
+               break;
+            case 1:
+               setMonday({ ...monday, nextDate: `${moment(today).format('DD-MM-YYYY')} ${moment(date).format('LT')}:00` });
+               break;
+            case 2:
+               setTuesday({ ...tuesday, nextDate: `${moment(today).format('DD-MM-YYYY')} ${moment(date).format('LT')}:00` });
+               break;
+            case 3:
+               setWednesday({ ...wednesday, nextDate: `${moment(today).format('DD-MM-YYYY')} ${moment(date).format('LT')}:00` });
+               break;
+            case 4:
+               setThursday({ ...thursday, nextDate: `${moment(today).format('DD-MM-YYYY')} ${moment(date).format('LT')}:00` });
+               break;
+            case 5:
+               setFriday({ ...friday, nextDate: `${moment(today).format('DD-MM-YYYY')} ${moment(date).format('LT')}:00` });
+               break;
+            case 6:
+               setSaturday({ ...saturday, nextDate: `${moment(today).format('DD-MM-YYYY')} ${moment(date).format('LT')}:00` });
                break;
          }
       }
@@ -81,7 +104,7 @@ const AlarmRegistration = () => {
          SimpleToast.show('Cadastro em andamento!');
          return;
       }
-      setLoading(true);
+      //setLoading(true);
 
       let token = uuid.v4();
       let status = true;
@@ -89,88 +112,42 @@ const AlarmRegistration = () => {
       let owner = context.userData.user.token;
       let formatedDate = moment(date).format();
 
-      console.log(formatedDate);
-      console.log(friday.nextDate);
+
 
 
       let days = { monday, tuesday, wednesday, thursday, friday, saturday, sunday }
-      if (days.monday.enabled) {
-         PushNotification.localNotification({
-            channelId: 'main-channel',
-            title: 'Alarm Clock at ' + time,
-            message: 'Tomar remédio ' + new Date(days.monday.nextDate),
-            id: token,
-         })
-         PushNotification.localNotificationSchedule({
-            channelId: 'main-channel',
-            title: 'Alarm Clock at ' + time,
-            message: 'Tomar remédio ' + drug,
-            date: new Date(days.monday.nextDate),
-            allowWhileIdle: true,
-            id: token,
-         })
-         console.log(new Date(days.monday.nextDate))
+
+      let nextAlarms = []
+      if (monday.enabled) {
+         nextAlarms.push(monday.nextDate);
       }
-      if (days.tuesday.enabled) {
-         PushNotification.localNotificationSchedule({
-            channelId: 'main-channel',
-            title: 'Alarm Clock at ' + time,
-            message: 'Tomar remédio ' + drug,
-            date: new Date(days.tuesday.nextDate),
-            allowWhileIdle: true,
-            id: token,
-         })
+      if (tuesday.enabled) {
+         nextAlarms.push(tuesday.nextDate);
       }
-      if (days.wednesday.enabled) {
-         PushNotification.localNotificationSchedule({
-            channelId: 'main-channel',
-            title: 'Alarm Clock at ' + time,
-            message: 'Tomar remédio ' + drug,
-            date: new Date(days.wednesday.nextDate),
-            allowWhileIdle: true,
-            id: token,
-         })
+      if (wednesday.enabled) {
+         nextAlarms.push(wednesday.nextDate);
       }
-      if (days.thursday.enabled) {
-         PushNotification.localNotificationSchedule({
-            channelId: 'main-channel',
-            title: 'Alarm Clock at ' + time,
-            message: 'Tomar remédio ' + drug,
-            date: new Date(days.thursday.nextDate),
-            allowWhileIdle: true,
-            id: token,
-         })
+      if (thursday.enabled) {
+         nextAlarms.push(thursday.nextDate);
       }
-      if (days.friday.enabled) {
-         PushNotification.localNotificationSchedule({
-            channelId: 'main-channel',
-            title: 'Alarm Clock at ' + time,
-            message: 'Tomar remédio ' + drug,
-            date: new Date(days.friday.nextDate),
-            allowWhileIdle: true,
-            id: token,
-         })
+      if (friday.enabled) {
+         nextAlarms.push(friday.nextDate);
       }
-      if (days.saturday.enabled) {
-         PushNotification.localNotificationSchedule({
-            channelId: 'main-channel',
-            title: 'Alarm Clock at ' + time,
-            message: 'Tomar remédio ' + drug,
-            date: new Date(days.saturday.nextDate),
-            allowWhileIdle: true,
-            id: token,
-         })
+      if (saturday.enabled) {
+         nextAlarms.push(saturday.nextDate);
       }
-      if (days.monday.enabled) {
-         PushNotification.localNotificationSchedule({
-            channelId: 'main-channel',
-            title: 'Alarm Clock at ' + time,
-            message: 'Tomar remédio ' + drug,
-            date: new Date(days.monday.nextDate),
-            allowWhileIdle: true,
-            id: token,
-         })
+      if (sunday.enabled) {
+         nextAlarms.push(sunday.nextDate);
       }
+      nextAlarms.sort((a, b) => (a > b) ? 1 : (b > a) ? -1 : 0)
+
+      let nextAlarm = nextAlarms[0];
+
+      let shared = '';
+      let assistant = '';
+
+      await setNotification(days, token, drug);
+
       let databaseRef = database().ref(`/bd/alarms/${token}`);
 
       await databaseRef.set({
@@ -184,6 +161,9 @@ const AlarmRegistration = () => {
          owner,
          token,
          status,
+         nextAlarm,
+         shared,
+         assistant,
       })
 
 

@@ -44,20 +44,24 @@ const AlarmList = () => {
    useEffect(() => {
       database()
          .ref('/bd/alarms')
-         .orderByChild('owner')
-         .equalTo(context.userData.user.token)
          .on('value', (snapshot) => {
             let object = [];
             snapshot.forEach((childItem) => {
                object.push(childItem.val());
             });
 
-            if (object) {
-               object.length > 1 && object.sort((a, b) => (a.time > b.time) ? 1 : (b.time > a.time) ? -1 : 0)
-               setAlarms(object);
+            let myAlarms = []
+
+            for (let i = 0; i < object.length; i++) {
+               if (object[i].owner == context.userData.user.token || object[i].shared == context.userData.user.token) {
+                  myAlarms.push(object[i]);
+               }
+            }
+            if (myAlarms) {
+               myAlarms.length > 1 && myAlarms.sort((a, b) => (a.time > b.time) ? 1 : (b.time > a.time) ? -1 : 0)
+               setAlarms(myAlarms);
             }
          });
-
 
 
 
@@ -77,7 +81,7 @@ const AlarmList = () => {
                   <TouchableOpacity style={style.mainContainer} onPress={() => handleAlarm(item)}>
                      <View style={style.rowDirection}>
                         <Text style={style.alarmText}> {item.time}</Text>
-                        <Image style={style.networkImage} source={require('../assets/images/users.png')} />
+                        {item.shared !== '' && <Image style={style.networkImage} source={require('../assets/images/users.png')} />}
                      </View>
                      <Text style={style.alarmLabel}>{item.title}</Text>
 

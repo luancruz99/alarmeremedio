@@ -31,33 +31,27 @@ const AlarmEdit = () => {
 
 
    const [date, setDate] = useState(moment(context.alarmData.alarm.formatedDate).toDate());
-   const [title, setTitle] = useState('');
-   const [doctor, setDoctor] = useState('');
-   const [description, setDescription] = useState('');
-   const [drug, setDrug] = useState('');
-   const [monday, setMonday] = useState({ nextDate: '', enabled: false });
-   const [tuesday, setTuesday] = useState({ nextDate: '', enabled: false });
-   const [wednesday, setWednesday] = useState({ nextDate: '', enabled: false });
-   const [thursday, setThursday] = useState({ nextDate: '', enabled: false });
-   const [friday, setFriday] = useState({ nextDate: '', enabled: false });
-   const [saturday, setSaturday] = useState({ nextDate: '', enabled: false });
-   const [sunday, setSunday] = useState({ nextDate: '', enabled: false });
+   const [title, setTitle] = useState(context.alarmData.alarm.title);
+   const [doctor, setDoctor] = useState(context.alarmData.alarm.doctor);
+   const [assistant, setAssistant] = useState(context.alarmData.alarm.assistant);
+   const [shared, setShared] = useState(context.alarmData.alarm.shared);
+   const [description, setDescription] = useState(context.alarmData.alarm.description);
+   const [drug, setDrug] = useState(context.alarmData.alarm.drug);
+   const [monday, setMonday] = useState(context.alarmData.alarm.days.monday);
+   const [tuesday, setTuesday] = useState(context.alarmData.alarm.days.tuesday);
+   const [wednesday, setWednesday] = useState(context.alarmData.alarm.days.wednesday);
+   const [thursday, setThursday] = useState(context.alarmData.alarm.days.thursday);
+   const [friday, setFriday] = useState(context.alarmData.alarm.days.friday);
+   const [saturday, setSaturday] = useState(context.alarmData.alarm.days.saturday);
+   const [sunday, setSunday] = useState(context.alarmData.alarm.days.sunday);
 
    const [loading, setLoading] = useState(false);
 
+   const [alarm, setAlarm] = useState();
+
    useEffect(() => {
 
-      setTitle(context.alarmData.alarm.title);
-      setDoctor(context.alarmData.alarm.doctor);
-      setDescription(context.alarmData.alarm.description);
-      setDrug(context.alarmData.alarm.drug);
-      setMonday(context.alarmData.alarm.days.monday);
-      setTuesday(context.alarmData.alarm.days.tuesday);
-      setWednesday(context.alarmData.alarm.days.wednesday);
-      setThursday(context.alarmData.alarm.days.thursday);
-      setFriday(context.alarmData.alarm.days.friday);
-      setSaturday(context.alarmData.alarm.days.saturday);
-      setSunday(context.alarmData.alarm.days.sunday);
+
 
       for (let i = 0; i <= 6; i++) {
          let today = new Date();
@@ -65,25 +59,25 @@ const AlarmEdit = () => {
 
          switch (today.getDay()) {
             case 0:
-               setSunday({ ...sunday, nextDate: moment(`${moment(today).format('YYYY-MM-DD')}T${moment(date).format('LT')}:00-03:00`).format() });
+               setSunday({ ...sunday, nextDate: `${moment(today).format('DD-MM-YYYY')} ${moment(date).format('LT')}:00` });
                break;
             case 1:
-               setMonday({ ...monday, nextDate: moment(`${moment(today).format('YYYY-MM-DD')}T${moment(date).format('LT')}:00-03:00`).format() });
+               setMonday({ ...monday, nextDate: `${moment(today).format('DD-MM-YYYY')} ${moment(date).format('LT')}:00` });
                break;
             case 2:
-               setTuesday({ ...tuesday, nextDate: moment(`${moment(today).format('YYYY-MM-DD')}T${moment(date).format('LT')}:00-03:00`).format() });
+               setTuesday({ ...tuesday, nextDate: `${moment(today).format('DD-MM-YYYY')} ${moment(date).format('LT')}:00` });
                break;
             case 3:
-               setWednesday({ ...wednesday, nextDate: moment(`${moment(today).format('YYYY-MM-DD')}T${moment(date).format('LT')}:00-03:00`).format() });
+               setWednesday({ ...wednesday, nextDate: `${moment(today).format('DD-MM-YYYY')} ${moment(date).format('LT')}:00` });
                break;
             case 4:
-               setThursday({ ...thursday, nextDate: moment(`${moment(today).format('YYYY-MM-DD')}T${moment(date).format('LT')}:00-03:00`).format() });
+               setThursday({ ...thursday, nextDate: `${moment(today).format('DD-MM-YYYY')} ${moment(date).format('LT')}:00` });
                break;
             case 5:
-               setFriday({ ...friday, nextDate: moment(`${moment(today).format('YYYY-MM-DD')}T${moment(date).format('LT')}:00-03:00`).format() });
+               setFriday({ ...friday, nextDate: `${moment(today).format('DD-MM-YYYY')} ${moment(date).format('LT')}:00` });
                break;
             case 6:
-               setSaturday({ ...saturday, nextDate: moment(`${moment(today).format('YYYY-MM-DD')}T${moment(date).format('LT')}:00-03:00`).format() });
+               setSaturday({ ...saturday, nextDate: `${moment(today).format('DD-MM-YYYY')} ${moment(date).format('LT')}:00` });
                break;
          }
       }
@@ -104,6 +98,25 @@ const AlarmEdit = () => {
 
       setLoading(true);
 
+      let shared = '';
+
+      let assistentRef = database().ref('/bd/users')
+
+
+
+      await assistentRef.orderByChild('email').equalTo(assistant).once('value').then(snapshot => {
+         if (snapshot.val() == null) {
+            SimpleToast.show('Cuidador não existe!');
+            return;
+         }
+         let userData = Object.values(snapshot.val())[0];
+         shared = userData.token;
+         console.log(shared)
+         console.log(userData.token)
+      })
+
+
+
       let databaseRef = database().ref(`/bd/alarms/${context.alarmData.alarm.token}`);
       let time = moment(date).format('LT');
       let formatedDate = moment(date).format();
@@ -117,6 +130,8 @@ const AlarmEdit = () => {
          description,
          drug,
          days,
+         assistant,
+         shared,
       })
 
       setLoading(false);
@@ -128,7 +143,8 @@ const AlarmEdit = () => {
 
          {loading && <ActivityIndicator style={style.loadingIndicator} color="#5b7cba" size="large" />}
 
-         <Text style={style.registrationText}>Editar Alarme</Text>
+
+         <Text style={style.registrationText}>Editar Alarme {context.alarmData.alarm.shared == context.userData.user.token && '(Cuidador)'} </Text>
 
          <ScrollView style={style.registrationArea}>
             <View style={style.alignItens}>
@@ -178,6 +194,12 @@ const AlarmEdit = () => {
                   value={doctor}
                   onChangeText={(t) => setDoctor(t)}
                   placeholder='Médico Responsável'
+               />
+               <TextInput
+                  style={style.registrationInput}
+                  value={assistant}
+                  onChangeText={(t) => setAssistant(t)}
+                  placeholder='Cuidador'
                />
                <View style={style.pickerView}>
                   <Picker

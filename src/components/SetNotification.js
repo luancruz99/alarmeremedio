@@ -1,77 +1,56 @@
-import PushNotification from 'react-native-push-notification';
+import ReactNativeAN from 'react-native-alarm-notification';
+import moment from 'moment';
 
-const setNotification = (days, token, time, drug) => {
+const alarmNotifData = {
+   title: "Alarm Ringing",
+   message: "My Notification Message",
+   channel: "alarm-channel",
+   ticker: "My Notification Ticker",
+   small_icon: "ic_launcher",
+   vibrate: true,
+   large_icon: "ic_launcher",
+   play_sound: true,
+   sound_name: null,
+   color: 'red',
+   schedule_once: true,
+   tag: 'some_tag',
+
+   // You can add any additional data that is important for the notification
+   // It will be added to the PendingIntent along with the rest of the bundle.
+   // e.g.
+   data: { foo: "bar" },
+};
+
+const setNotification = async (days, token, drug) => {
    if (days.monday.enabled) {
-      PushNotification.localNotificationSchedule({
-         channelId: 'main-channel',
-         title: 'Alarm Clock at ' + time,
-         message: 'Tomar remédio ' + drug,
-         date: new Date(days.monday.nextDate),
-         allowWhileIdle: true,
-         id: token,
-      })
-      console.log(new Date(days.monday.nextDate))
+      const monday = await ReactNativeAN.scheduleAlarm({ ...alarmNotifData, fire_date: days.monday.nextDate, id: token, message: `Tomar remédio: ${drug}` })
+      console.log(monday);
    }
    if (days.tuesday.enabled) {
-      PushNotification.localNotificationSchedule({
-         channelId: 'main-channel',
-         title: 'Alarm Clock at ' + time,
-         message: 'Tomar remédio ' + drug,
-         date: new Date(days.tuesday.nextDate),
-         allowWhileIdle: true,
-         id: token,
-      })
+      const tuesday = await ReactNativeAN.scheduleAlarm({ ...alarmNotifData, fire_date: days.tuesday.nextDate, id: token, message: `Tomar remédio: ${drug}` })
+      console.log(tuesday);
    }
    if (days.wednesday.enabled) {
-      PushNotification.localNotificationSchedule({
-         channelId: 'main-channel',
-         title: 'Alarm Clock at ' + time,
-         message: 'Tomar remédio ' + drug,
-         date: new Date(days.wednesday.nextDate),
-         allowWhileIdle: true,
-         id: token,
-      })
+      const wednesday = await ReactNativeAN.scheduleAlarm({ ...alarmNotifData, fire_date: days.wednesday.nextDate, id: token, message: `Tomar remédio: ${drug}` })
+      console.log(wednesday);
    }
    if (days.thursday.enabled) {
-      PushNotification.localNotificationSchedule({
-         channelId: 'main-channel',
-         title: 'Alarm Clock at ' + time,
-         message: 'Tomar remédio ' + drug,
-         date: new Date(days.thursday.nextDate),
-         allowWhileIdle: true,
-         id: token,
-      })
+      const thursday = await ReactNativeAN.scheduleAlarm({ ...alarmNotifData, id: token, fire_date: days.thursday.nextDate, message: `Tomar remédio: ${drug}` })
+      console.log(thursday);
    }
    if (days.friday.enabled) {
-      PushNotification.localNotificationSchedule({
-         channelId: 'main-channel',
-         title: 'Alarm Clock at ' + time,
-         message: 'Tomar remédio ' + drug,
-         date: new Date(days.friday.nextDate),
-         allowWhileIdle: true,
-         id: token,
-      })
+      const friday = await ReactNativeAN.scheduleAlarm({ ...alarmNotifData, id: token, fire_date: days.friday.nextDate, message: `Tomar remédio: ${drug}` })
+      console.log(friday);
    }
    if (days.saturday.enabled) {
-      PushNotification.localNotificationSchedule({
-         channelId: 'main-channel',
-         title: 'Alarm Clock at ' + time,
-         message: 'Tomar remédio ' + drug,
-         date: new Date(days.saturday.nextDate),
-         allowWhileIdle: true,
-         id: token,
-      })
+      const saturday = await ReactNativeAN.scheduleAlarm({ ...alarmNotifData, id: token, fire_date: days.saturday.nextDate, message: `Tomar remédio: ${drug}` })
+      console.log(saturday);
    }
-   if (days.monday.enabled) {
-      PushNotification.localNotificationSchedule({
-         channelId: 'main-channel',
-         title: 'Alarm Clock at ' + time,
-         message: 'Tomar remédio ' + drug,
-         date: new Date(days.monday.nextDate),
-         allowWhileIdle: true,
-         id: token,
-      })
+   if (days.sunday.enabled) {
+      const sunday = await ReactNativeAN.scheduleAlarm({ ...alarmNotifData, id: token, fire_date: days.sunday.nextDate, message: `Tomar remédio: ${drug}` })
+      console.log(sunday);
    }
+
 }
 
 export { setNotification };
