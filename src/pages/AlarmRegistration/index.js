@@ -35,6 +35,7 @@ const AlarmRegistration = () => {
    const [doctor, setDoctor] = useState('');
    const [description, setDescription] = useState('');
    const [drug, setDrug] = useState('');
+   const [drugs, setDrugs] = useState('');
    const [monday, setMonday] = useState({ nextDate: '', enabled: false });
    const [tuesday, setTuesday] = useState({ nextDate: '', enabled: false });
    const [wednesday, setWednesday] = useState({ nextDate: '', enabled: false });
@@ -50,29 +51,6 @@ const AlarmRegistration = () => {
          let today = new Date();
          today.setDate(today.getDate() + i)
 
-         /*switch (today.getDay()) {
-            case 0:
-               setSunday({ ...sunday, nextDate: `${moment(today).format('YYYY-MM-DD')}T${moment(date).format('LT')}:00-03:00` });
-               break;
-            case 1:
-               setMonday({ ...monday, nextDate: `${moment(today).format('YYYY-MM-DD')}T${moment(date).format('LT')}:00-03:00` });
-               break;
-            case 2:
-               setTuesday({ ...tuesday, nextDate: `${moment(today).format('YYYY-MM-DD')}T${moment(date).format('LT')}:00-03:00` });
-               break;
-            case 3:
-               setWednesday({ ...wednesday, nextDate: `${moment(today).format('YYYY-MM-DD')}T${moment(date).format('LT')}:00-03:00` });
-               break;
-            case 4:
-               setThursday({ ...thursday, nextDate: `${moment(today).format('YYYY-MM-DD')}T${moment(date).format('LT')}:00-03:00` });
-               break;
-            case 5:
-               setFriday({ ...friday, nextDate: `${moment(today).format('YYYY-MM-DD')}T${moment(date).format('LT')}:00-03:00` });
-               break;
-            case 6:
-               setSaturday({ ...saturday, nextDate: `${moment(today).format('YYYY-MM-DD')}T${moment(date).format('LT')}:00-03:00` });
-               break;
-         }*/
          switch (today.getDay()) {
             case 0:
                setSunday({ ...sunday, nextDate: `${moment(today).format('DD-MM-YYYY')} ${moment(date).format('LT')}:00` });
@@ -97,14 +75,27 @@ const AlarmRegistration = () => {
                break;
          }
       }
-   }, [date])
+   }, [date]);
+
+   useEffect(() => {
+      database().ref('bd/drugs').on('value', (snapshot) => {
+         let object = []
+         snapshot.forEach((childItem) => {
+            object.push(childItem.val());
+         });
+         if (object) {
+            object.length > 1 && object.sort((a, b) => (a.time > b.time) ? 1 : (b.time > a.time) ? -1 : 0)
+            setDrugs(object);
+         }
+      })
+   }, []);
 
    const handleRegistrationButton = async () => {
       if (loading) {
          SimpleToast.show('Cadastro em andamento!');
          return;
       }
-      //setLoading(true);
+      setLoading(true);
 
       let token = uuid.v4();
       let status = true;
@@ -234,8 +225,16 @@ const AlarmRegistration = () => {
                      style={style.registrationPicker}
                   >
                      <Picker.Item label='Medicamento' value='' enabled={false} style={style.pickerItem} />
-                     <Picker.Item label='Remédio 1' value='1' style={style.enabledPickerItem} />
-                     <Picker.Item label='Remédio 2' value='2' style={style.enabledPickerItem} />
+                     {
+                        Object.keys(drugs).map((key) => {
+                           return (<Picker.item
+                              style={style.enabledPickerItem}
+                              value={drugs[key].name}
+                              label={drugs[key].name}
+                              key={''}
+                           />)
+                        })
+                     }
                   </Picker>
                </View>
                <TextInput

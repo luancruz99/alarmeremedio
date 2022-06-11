@@ -37,6 +37,7 @@ const AlarmEdit = () => {
    const [shared, setShared] = useState(context.alarmData.alarm.shared);
    const [description, setDescription] = useState(context.alarmData.alarm.description);
    const [drug, setDrug] = useState(context.alarmData.alarm.drug);
+   const [drugs, setDrugs] = useState('');
    const [monday, setMonday] = useState(context.alarmData.alarm.days.monday);
    const [tuesday, setTuesday] = useState(context.alarmData.alarm.days.tuesday);
    const [wednesday, setWednesday] = useState(context.alarmData.alarm.days.wednesday);
@@ -48,6 +49,19 @@ const AlarmEdit = () => {
    const [loading, setLoading] = useState(false);
 
    const [alarm, setAlarm] = useState();
+
+   useEffect(() => {
+      database().ref('bd/drugs').on('value', (snapshot) => {
+         let object = []
+         snapshot.forEach((childItem) => {
+            object.push(childItem.val());
+         });
+         if (object) {
+            object.length > 1 && object.sort((a, b) => (a.time > b.time) ? 1 : (b.time > a.time) ? -1 : 0)
+            setDrugs(object);
+         }
+      })
+   }, []);
 
    useEffect(() => {
 
@@ -82,6 +96,8 @@ const AlarmEdit = () => {
          }
       }
    }, [date]);
+
+
 
    const handleTrashIcon = async () => {
       let databaseRef = database().ref(`/bd/alarms/${context.alarmData.alarm.token}`);
@@ -208,8 +224,16 @@ const AlarmEdit = () => {
                      style={style.registrationPicker}
                   >
                      <Picker.Item label='Medicamento' value='' enabled={false} style={style.pickerItem} />
-                     <Picker.Item label='Remédio 1' value='1' style={style.enabledPickerItem} />
-                     <Picker.Item label='Remédio 2' value='2' style={style.enabledPickerItem} />
+                     {
+                        Object.keys(drugs).map((key) => {
+                           return (<Picker.item
+                              style={style.enabledPickerItem}
+                              value={drugs[key].name}
+                              label={drugs[key].name}
+                              key={''}
+                           />)
+                        })
+                     }
                   </Picker>
                </View>
                <TextInput
@@ -227,7 +251,7 @@ const AlarmEdit = () => {
                         style={style.registrationPicker}
                      >
                         <Picker.Item label='Alexa' value='' style={style.pickerItem} />
-                        <Picker.Item label='Google Home' value='' style={style.pickerItem} />
+
                      </Picker>
                   </View>
 

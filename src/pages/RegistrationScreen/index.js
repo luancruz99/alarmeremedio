@@ -63,6 +63,7 @@ const RegistrationScreen = () => {
          let token = uuid.v4();
 
          let databaseRef = database().ref(`/bd/users/${token}`);
+         let type = 'user';
 
          await databaseRef.set({
             name,
@@ -71,7 +72,8 @@ const RegistrationScreen = () => {
             phoneNumber,
             email,
             password,
-            token
+            token,
+            type
          })
 
          setLoading(false);
@@ -79,7 +81,7 @@ const RegistrationScreen = () => {
          SimpleToast.show('Cadastro concluído!');
          navigation.goBack();
 
-      } catch (error){
+      } catch (error) {
          if (error instanceof yup.ValidationError) {
             SimpleToast.show(error.message);
          } else {
