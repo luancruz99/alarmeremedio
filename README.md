@@ -18,4 +18,5 @@
 ![visualizacao](https://github.com/luancruz99/alarmeremedio/assets/71301674/ac8dcc04-ff73-4d45-ba12-72e814d363fe)
 ![criacao](https://github.com/luancruz99/alarmeremedio/assets/71301674/e714507b-476c-4190-b4fd-c2251ffd93e4)
 ![edicao](https://github.com/luancruz99/alarmeremedio/assets/71301674/aa2b5968-97e1-4600-9cd7-d0a50bd56270)
+![perfil](https://github.com/luancruz99/alarmeremedio/assets/71301674/601296c0-07ba-4195-90fb-e02168417ff1)
 
